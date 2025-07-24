@@ -1,13 +1,13 @@
 import FeaturedSection from '../components/FeaturedSection';
 import HeroSection from '../components/HeroSection';
-import TrailorSection from '../components/TrailorSection';
+import TrailersSection from '../components/TrailersSection';
 
 const Home = () => {
   return (
     <>
       <HeroSection />
       <FeaturedSection />
-      <TrailorSection />
+      <TrailersSection />
     </>
   );
 };
