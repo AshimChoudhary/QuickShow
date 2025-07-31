@@ -15,6 +15,7 @@ const TrailersSection = () => {
         Trailers
       </p>
 
+      <div className="p-3"></div>
       <div className="relative mt-6">
         <BlurCircle top="-100px" right="-100px" />
         <ReactPlayer
