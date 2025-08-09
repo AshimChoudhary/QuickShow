@@ -6,6 +6,7 @@ import { Heart, PlayCircleIcon, StarIcon } from 'lucide-react';
 import timeFormat from '../lib/timeFormat';
 import DateSelect from '../components/DateSelect';
 import MovieCard from '../components/MovieCard';
+import Loading from '../components/Loading';
 const MovieDetails = () => {
   const { id } = useParams();
   const [show, setShow] = useState(null);
@@ -113,9 +114,7 @@ const MovieDetails = () => {
       </div>
     </div>
   ) : (
-    <div>
-      <h1>Loading....</h1>
-    </div>
+    <Loading />
   );
 };
 export default MovieDetails;
