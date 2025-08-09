@@ -67,9 +67,9 @@ const Navbar = () => {
               scrollTo(0, 0);
               setIsOpen(false);
             }}
-            to="/favourite"
+            to="/favorite"
           >
-            Favourites
+            Favorites
           </Link>
         </div>
         <div className="flex items-center gap-8">
