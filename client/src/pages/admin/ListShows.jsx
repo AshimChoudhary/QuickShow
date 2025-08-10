@@ -52,7 +52,10 @@ const ListShows = () => {
           </thead>
           <tbody className="text-sm font-light">
             {shows.map((show, index) => (
-              <tr className="border-b border-primary/10 bg-primary/5 even:bg-primary/10">
+              <tr
+                key={index}
+                className="border-b border-primary/20 bg-primary/5 even:bg-primary/10"
+              >
                 <td className="p-2 min-w-45 pl-5">{show.movie.title}</td>
 
                 <td className="p-2">{dateFormat(show.showDateTime)}</td>
@@ -62,7 +65,7 @@ const ListShows = () => {
                 </td>
 
                 <td className="p-2">
-                  {currency}{' '}
+                  {currency}
                   {Object.keys(show.occupiedSeats).length * show.showPrice}
                 </td>
               </tr>
