@@ -4,6 +4,8 @@ import cors from 'cors';
 
 import 'dotenv/config';
 
+clerk;
+
 const app = express();
 
 const port = 3000;
