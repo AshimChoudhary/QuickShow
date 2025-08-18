@@ -10,7 +10,6 @@ export const getNowPlayingMovies = async (req, res) => {
         headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}` },
       }
     );
-
     const movies = data.results;
     res.json({ success: true, movies: movies });
   } catch (error) {
@@ -44,10 +43,10 @@ export const addShow = async (req, res) => {
         overview: movieApiData.overview,
         poster_path: movieApiData.poster_path,
         backdrop_path: movieApiData.backdrop_path,
-        genres: movieApiData.genres,
-        casts: movieCreditsData.cast,
         release_date: movieApiData.release_date,
         original_language: movieApiData.original_language,
+        genres: movieApiData.genres,
+        casts: movieCreditsData.cast,
         tagline: movieApiData.tagline || '',
         vote_average: movieApiData.vote_average,
         runtime: movieApiData.runtime,
