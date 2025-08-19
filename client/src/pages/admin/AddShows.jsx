@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { dummyShowsData } from '../../assets/assets';
 import Loading from '../../components/Loading';
 import Title from '../../components/admin/title';
 import { CheckIcon, DeleteIcon, StarIcon } from 'lucide-react';
 import { KConverter } from '../../lib/KConverter';
+import { useAppContext } from '../../context/AppContext';
+import toast from 'react-hot-toast';
 
 const AddShows = () => {
+  const { axios, getToken, user, image_base_url } = useAppContext();
+
   const currency = import.meta.env.VITE_CURRENCY;
 
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
@@ -13,6 +17,8 @@ const AddShows = () => {
   const [dateTimeSelection, setDateTimeSelection] = useState({});
   const [dateTimeInput, setDateTimeInput] = useState('');
   const [showPrice, setShowPrice] = useState('');
+
+  const [addingShow, setAddingShow] = useState(false);
 
   const handleDateTimeAdd = () => {
     if (!dateTimeInput) return;
@@ -22,7 +28,7 @@ const AddShows = () => {
 
     setDateTimeSelection((prev) => {
       const times = prev[date] || [];
-      if (!times.inclides(time)) {
+      if (!times.includes(time)) {
         return { ...prev, [date]: [...times, time] };
       }
       return prev;
@@ -43,13 +49,70 @@ const AddShows = () => {
     });
   };
 
-  const fetchNowPlayingMovies = async () => {
-    setNowPlayingMovies(dummyShowsData);
-  };
+  const handleSubmit = async () => {
+    try {
+      setAddingShow(true);
 
+      if (
+        !selectedMovies ||
+        Object.keys(dateTimeSelection).length === 0 ||
+        !showPrice
+      ) {
+        return toast('Missing Required Fields');
+      }
+
+      const showsInput = Object.entries(dateTimeSelection).flatMap(
+        ([date, times]) =>
+          times.map((time) => ({
+            date,
+            time,
+          }))
+      );
+
+      const payload = {
+        movie: selectedMovies,
+        showsInput,
+        showPrice: Number(showPrice),
+      };
+
+      const { data } = await axios.post('/api/show/add', payload, {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+
+      if (data.success) {
+        toast.success(data.message);
+        setSelectedMovies(null);
+        setDateTimeSelection({});
+        setShowPrice('');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error('Submission Error: ', error);
+      toast.error('An error Occured Please try again');
+    }
+
+    setAddingShow(false);
+  };
   useEffect(() => {
-    fetchNowPlayingMovies();
-  }, []);
+    if (user) {
+      fetchNowPlayingMovies();
+    }
+  }, [user]);
+
+  const fetchNowPlayingMovies = async () => {
+    try {
+      const { data } = await axios.get('/api/show/now-playing', {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+
+      if (data.success) {
+        setNowPlayingMovies(data.movies);
+      }
+    } catch (error) {
+      console.error('Error Fetching Movies: ', error);
+    }
+  };
 
   return nowPlayingMovies.length > 0 ? (
     <>
@@ -61,13 +124,13 @@ const AddShows = () => {
         <div className="group flex flex-wrap gap-4 mt-4 w-max">
           {nowPlayingMovies.map((movie) => (
             <div
-              key={movie}
-              className={`relative max-w-40 cursor-pointer group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300`}
+              key={movie.id}
+              className="relative max-w-40 cursor-pointer ..."
               onClick={() => setSelectedMovies(movie.id)}
             >
               <div className="relative rounded-lg overflow-hidden">
                 <img
-                  src={movie.poster_path}
+                  src={image_base_url + movie.poster_path}
                   alt="Add-Show_Image"
                   className="w-full object-cover brightness-90"
                 />
@@ -144,14 +207,14 @@ const AddShows = () => {
           <h2 className="mb-2">Selected Date-Time</h2>
 
           <ul className="space-y-3">
-            {Object.entries(dateTimeSelection).amp(([date, times]) => (
+            {Object.entries(dateTimeSelection).map(([date, times]) => (
               <li key={date}>
                 <div className="font-medium">{date}</div>
                 <div className="flex flex-wrap gap-2 mt-1 text-sm">
                   {times.map((time) => (
                     <div
-                      key={time}
-                      className="border border-primary px-2 py-1 flex items-center rounded"
+                      key={`${date}-${time}`}
+                      className="border border-primary px-2 py-1 ..."
                     >
                       <span>{time}</span>
 
@@ -169,7 +232,11 @@ const AddShows = () => {
         </div>
       )}
 
-      <button className="bg-primary text-white px-8 py-2 mt-6 rounded hover:bg-primary/90 transition-all cursor-pointer">
+      <button
+        onClick={handleSubmit}
+        disabled={addingShow}
+        className="bg-primary text-white px-8 py-2 mt-6 rounded hover:bg-primary/90 transition-all cursor-pointer"
+      >
         Add Show
       </button>
     </>
