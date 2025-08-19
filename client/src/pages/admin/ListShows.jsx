@@ -3,9 +3,11 @@ import { dummyShowsData } from '../../assets/assets';
 import Loading from '../../components/Loading';
 import Title from '../../components/admin/title';
 import { dateFormat } from '../../lib/dateFormat';
+import { useAppContext } from '../../context/AppContext';
 
 const ListShows = () => {
   const currency = import.meta.env.VITE_CURRENCY;
+  const { axios, getToken, user } = useAppContext();
 
   const [shows, setShows] = useState([]);
 
@@ -13,18 +15,11 @@ const ListShows = () => {
 
   const getAllShows = async () => {
     try {
-      setShows([
-        {
-          movie: dummyShowsData[0],
-          showDateTime: '2025-08-30T02:30:00.000Z',
-          showPrice: 59,
-          occupiedSeats: {
-            A1: 'user_1',
-            B1: 'user_2',
-            C1: 'user_3',
-          },
-        },
-      ]);
+      const { data } = await axios.get('/api/admin/all-shows', {
+        headers: { Authrization: `Bearer ${await getToken()}` },
+      });
+
+      setShows(data.shows);
 
       setLoading(false);
     } catch (error) {
@@ -33,8 +28,10 @@ const ListShows = () => {
   };
 
   useEffect(() => {
-    getAllShows();
-  }, []);
+    if (user) {
+      getAllShows();
+    }
+  }, [user]);
 
   return !loading ? (
     <>
@@ -51,7 +48,7 @@ const ListShows = () => {
             </tr>
           </thead>
           <tbody className="text-sm font-light">
-            {shows.map((show, index) => (
+            {shows?.map((show, index) => (
               <tr
                 key={index}
                 className="border-b border-primary/20 bg-primary/5 even:bg-primary/10"
