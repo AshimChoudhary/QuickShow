@@ -11,9 +11,12 @@ import Loading from '../../components/Loading';
 import Title from '../../components/admin/title';
 import BlurCircle from '../../components/BlurCircle';
 import { dateFormat } from '../../lib/dateFormat';
+import { useAppContext } from '../../context/AppContext';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
   const currency = import.meta.env.VITE_CURRENCY;
+  const { axios, getToken, user, image_base_url } = useAppContext();
 
   const [dashBoardData, SetDashBoardData] = useState({
     totalBookings: 0,
@@ -48,13 +51,27 @@ const Dashboard = () => {
   ];
 
   const fetchDashBoardData = async () => {
-    SetDashBoardData(dummyDashboardData);
-    setLoading(false);
+    try {
+      const { data } = await axios.get('/api/admin/dashboard', {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+
+      if (data.success) {
+        SetDashBoardData(data.dashBoardData);
+        setLoading(false);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error('Error Fetching DashBoard Data: ', error);
+    }
   };
 
   useEffect(() => {
-    fetchDashBoardData();
-  }, []);
+    if (user) {
+      fetchDashBoardData();
+    }
+  }, [user]);
 
   return !loading ? (
     <>
@@ -87,7 +104,7 @@ const Dashboard = () => {
             className="w-55 rounded-lg overflow-hidden h-full pb-3 bg-primary/10 border border-primary/20 hover:-translate-y-1 transition duration-300"
           >
             <img
-              src={show.movie.poster_path}
+              src={image_base_url + show.movie.poster_path}
               alt="image_shows"
               className="h-60 w-full object-cover"
             />
