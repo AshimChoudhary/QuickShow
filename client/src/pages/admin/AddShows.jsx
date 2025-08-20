@@ -1,5 +1,4 @@
 import { use, useEffect, useState } from 'react';
-import { dummyShowsData } from '../../assets/assets';
 import Loading from '../../components/Loading';
 import Title from '../../components/admin/title';
 import { CheckIcon, DeleteIcon, StarIcon } from 'lucide-react';
@@ -70,7 +69,7 @@ const AddShows = () => {
       );
 
       const payload = {
-        movie: selectedMovies,
+        movieId: selectedMovies,
         showsInput,
         showPrice: Number(showPrice),
       };
