@@ -6,6 +6,7 @@ import { ArrowRight, ClockIcon } from 'lucide-react';
 import isoTimeFormat from '../lib/isoTimeFormat';
 import BlurCircle from '../components/BlurCircle';
 import toast from 'react-hot-toast';
+import { useAppContext } from '../context/AppContext';
 
 const SeatLayout = () => {
   const { id, date } = useParams();
@@ -21,6 +22,8 @@ const SeatLayout = () => {
     ['G', 'H'],
     ['I', 'J'],
   ];
+
+  const { axios, getToken, user } = useAppContext();
 
   const getShow = async () => {
     const show = dummyShowsData.find((show) => show._id === id);
