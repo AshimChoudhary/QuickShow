@@ -41,14 +41,13 @@ const SeatLayout = () => {
 
   const handleSeatClick = (seatId) => {
     if (!selectedTime) {
-      return toast('Please Select Time First');
+      return toast('Please select a time first');
     }
-    if (!selectedSeats.includes(seatId) && selectedSeats.length > 4) {
-      return toast('You can only Select 5 seats');
+    if (!selectedSeats.includes(seatId) && selectedSeats.length >= 5) {
+      return toast('You can only select up to 5 seats');
     }
-
     if (occupiedSeats.includes(seatId)) {
-      return toast('This seat is Already Booked');
+      return toast('This seat is already booked');
     }
     setSelectedSeats((prev) =>
       prev.includes(seatId)
@@ -56,7 +55,6 @@ const SeatLayout = () => {
         : [...prev, seatId]
     );
   };
-
   const renderSeats = (row, count = 9) => (
     <div key={row} className="flex gap-2 mt-2">
       <div className="flex flex-wrap items-center justify-center gap-2">
@@ -81,10 +79,7 @@ const SeatLayout = () => {
 
   const getOccupiedSeats = async () => {
     try {
-      const { data } = await axios.get(
-        `/api/booking/seats/${selectedTime.showId}`
-      );
-
+      const { data } = await axios.get(`/api/booking/seats/${id}`);
       if (data.success) {
         setOccupiedSeats(data.occupiedSeats);
       } else {

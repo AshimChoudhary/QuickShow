@@ -24,6 +24,7 @@ export const createBooking = async (req, res) => {
   try {
     const { userId } = req.auth();
     const { showId, selectedSeats } = req.body;
+    const { origin } = req.headers;
 
     const isAvailable = await checkSeatsAvailability(showId, selectedSeats);
 
@@ -59,7 +60,7 @@ export const createBooking = async (req, res) => {
           product_data: {
             name: showData.movie.title,
           },
-          unit_amount: Math.floor(booking.amount) * 100,
+          unit_amount: Math.floor(booking.amount * 100),
         },
         quantity: 1,
       },
@@ -76,7 +77,8 @@ export const createBooking = async (req, res) => {
       expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
     });
 
-    (booking.paymentLink = session.url), await booking.save();
+    booking.paymentLink = session.url;
+    await booking.save();
 
     res.json({ success: true, url: session.url });
   } catch (error) {
@@ -89,7 +91,10 @@ export const getOccupiedSeats = async (req, res) => {
   try {
     const { showId } = req.params;
     const showData = await Show.findById(showId);
-    const occupiedSeats = Object.keys(showData.occupiedSeats);
+    if (!showData) {
+      return res.json({ success: false, message: 'Show not found' });
+    }
+    const occupiedSeats = Object.keys(showData.occupiedSeats || {});
 
     res.json({ success: true, occupiedSeats });
   } catch (error) {
