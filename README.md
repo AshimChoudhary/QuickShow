@@ -19,6 +19,7 @@ Experience it live: [QuickShow Demo](https://quick-show-rho-six.vercel.app/)
   - **Reminder email** delivered **8 hours before** showtime.
 - ⚡ **Event-Driven Workflow Management** – Inngest handles background tasks like releasing seats and scheduling reminders.
 - 🗄️ **MongoDB** for data storage of shows, users, bookings, and more.
+- ⚙️ **For Admin Access** for Admin access contact me.
 
 ---
 
@@ -98,6 +99,13 @@ Check out the app in action: [QuickShow Live Demo](https://quick-show-rho-six.ve
 ![My Bookings](./screenshots/myBookings.png)
 
 
+
+## 👨‍💻 Author
+
+**Ashim Choudhary**  
+
+- GitHub: [github.com/AshimChoudhary](https://github.com/AshimChoudhary)  
+- LinkedIn: [linkedin.com/in/ashim-choudhary-707191336](https://www.linkedin.com/in/ashim-choudhary-707191336/)  
 
 
 
