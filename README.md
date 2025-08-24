@@ -82,4 +82,8 @@ Check out the app in action: [QuickShow Live Demo](https://quick-show-rho-six.ve
 
 ##  Screen - Shots
 
+![Home Page](./screenshots/home.png)
+![Checkout Flow](./screenshots/checkout.png)
+
+
 
