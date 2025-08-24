@@ -80,10 +80,25 @@ Check out the app in action: [QuickShow Live Demo](https://quick-show-rho-six.ve
     VITE_BASE_URL = http://localhost:3000
     VITE_TMDB_IMAGE_BASE_URL = https://image.tmdb.org/t/p/original
 
-##  Screen - Shots
+##  ScreenShots
 
+**Home Page**
 ![Home Page](./screenshots/home.png)
+
+**CheckOut Page**
 ![Checkout Flow](./screenshots/checkout.png)
+
+**Movie Info Page**
+![Movie Info](./screenshots/MovieInfo.png)
+
+**Seat Layout Page**
+![Seat layout](./screenshots/SeatLayout.png)
+
+**My Bookings Page**
+![My Bookings](./screenshots/myBookings.png)
+
+
+
 
 
 
