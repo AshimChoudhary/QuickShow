@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import Booking from '../models/Booking.js';
 import Show from '../models/Show.js';
 import sendEmail from '../configs/nodeMailer.js';
+import mongoose from 'mongoose';
 
 export const inngest = new Inngest({ id: 'movie-ticket-booking' });
 
@@ -84,7 +85,18 @@ const releaseSeatsAndDeleteBookings = inngest.createFunction(
       const booking = await Booking.findById(bookingId);
 
       if (!booking.isPaid) {
+        // Validate if booking.show is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(booking.show)) {
+          console.log('Invalid ObjectId for show:', booking.show);
+          return;
+        }
+
         const show = await Show.findById(booking.show);
+        if (!show) {
+          console.log('Show not found:', booking.show);
+          return;
+        }
+
         booking.bookedSeats.forEach((seat) => {
           delete show.occupiedSeats[seat];
         });

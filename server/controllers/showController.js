@@ -125,7 +125,15 @@ export const getShow = async (req, res) => {
       if (!dateTime[date]) {
         dateTime[date] = [];
       }
-      dateTime[date].push({ time: show.showDateTime, showId: show._id });
+      console.log(
+        'Show ID being sent to frontend:',
+        show._id,
+        'Type:',
+        typeof show._id,
+        'Stringified:',
+        show._id.toString()
+      );
+      dateTime[date].push({ time: show.showDateTime, showId: show._id.toString() });
     });
 
     res.json({ success: true, movie, dateTime });

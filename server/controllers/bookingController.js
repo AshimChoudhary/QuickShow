@@ -2,9 +2,16 @@ import { inngest } from '../inngest/index.js';
 import Booking from '../models/Booking.js';
 import Show from '../models/Show.js';
 import stripe from 'stripe';
+import mongoose from 'mongoose';
 
 const checkSeatsAvailability = async (showId, selectedSeats) => {
   try {
+    // Validate if showId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(showId)) {
+      console.log('Invalid ObjectId:', showId);
+      return false;
+    }
+
     const showData = await Show.findById(showId);
     if (!showData) {
       return false;
@@ -26,6 +33,17 @@ export const createBooking = async (req, res) => {
     const { userId } = req.auth();
     const { showId, selectedSeats } = req.body;
     const { origin } = req.headers;
+
+    console.log('Received showId:', showId, 'Type:', typeof showId);
+
+    // Validate if showId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(showId)) {
+      console.log('Invalid ObjectId received:', showId);
+      return res.json({
+        success: false,
+        message: 'Invalid show ID format',
+      });
+    }
 
     const isAvailable = await checkSeatsAvailability(showId, selectedSeats);
 
@@ -98,6 +116,20 @@ export const createBooking = async (req, res) => {
 export const getOccupiedSeats = async (req, res) => {
   try {
     const { showId } = req.params;
+
+    console.log(
+      'getOccupiedSeats - Received showId:',
+      showId,
+      'Type:',
+      typeof showId
+    );
+
+    // Validate if showId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(showId)) {
+      console.log('getOccupiedSeats - Invalid ObjectId received:', showId);
+      return res.json({ success: false, message: 'Invalid show ID format' });
+    }
+
     const showData = await Show.findById(showId);
     if (!showData) {
       return res.json({ success: false, message: 'Show not found' });

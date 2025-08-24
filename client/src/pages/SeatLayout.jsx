@@ -79,7 +79,18 @@ const SeatLayout = () => {
 
   const getOccupiedSeats = async () => {
     try {
-      const { data } = await axios.get(`/api/booking/seats/${id}`);
+      if (!selectedTime || !selectedTime.showId) {
+        return;
+      }
+      console.log(
+        'Getting occupied seats for showId:',
+        selectedTime.showId,
+        'Type:',
+        typeof selectedTime.showId
+      );
+      const { data } = await axios.get(
+        `/api/booking/seats/${selectedTime.showId}`
+      );
       if (data.success) {
         setOccupiedSeats(data.occupiedSeats);
       } else {
@@ -100,6 +111,12 @@ const SeatLayout = () => {
         return toast.error('Please select a time and Seat');
       }
 
+      console.log(
+        'Sending showId to backend:',
+        selectedTime.showId,
+        'Type:',
+        typeof selectedTime.showId
+      );
       const { data } = await axios.post(
         '/api/booking/create',
         { showId: selectedTime.showId, selectedSeats },
